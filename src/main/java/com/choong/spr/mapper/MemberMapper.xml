@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.choong.spr.mapper.MemberMapper">
+
+	<insert id="insertMember">
+		INSERT INTO Member(id, password, email, nickname)
+		VALUES(#{id}, #{password}, #{email}, #{nickname})
+	</insert>
+	
+	<select id="countMemberId" resultType="int">
+		SELECT COUNT(id) FROM Member WHERE id  = #{id}
+	</select>
+	
+	<select id="countMemberEmail" resultType="int">
+		SELECT COUNT(email) FROM Member WHERE email = #{email}
+	</select>
+	
+	<select id="countMemberNickname" resultType="int">
+		SELECT COUNT(nickname) FROM Member WHERE nickname = #{nickname}
+	</select>
+	
+	<select id="listMember" resultType="com.choong.spr.domain.MemberDto">
+		SELECT id, password, email, nickname, inserted FROM Member ORDER BY inserted DESC
+	</select>
+	
+	<select id="selectMemberById" resultType="com.choong.spr.domain.MemberDto">
+		SELECT id, password, email, nickname, inserted FROM Member WHERE id = #{id}
+	</select>
+	
+	<delete id="deleteMemberById">
+		DELETE FROM Member
+		WHERE id = #{id}
+	</delete>
+	
+	<select id="getcountMemberEmail" resultType="int">
+		SELECT COUNT(email) FROM Member WHERE email = #{email}
+	</select>
+	
+	<select id="getcountMemberNickname" resultType="int">
+		SELECT COUNT(nickname) FROM Member WHERE nickname = #{nickName}
+	</select>
+	
+	<update id="updateMember">
+		UPDATE Member
+		SET password = #{password},
+			email = #{email},
+			nickname = #{nickname}
+		WHERE
+			id = #{id}
+	</update>
+	
+	<!-- 권한 추가 -->
+	
+	<insert id="insertAuth">
+		INSERT INTO Auth (memberId, role)
+		VALUES (#{id}, #{auth})
+	</insert>
+	
+	<delete id="deleteAuthById">
+		DELETE FROM Auth
+		WHERE memberId = #{id}
+	</delete>
+	
+</mapper>

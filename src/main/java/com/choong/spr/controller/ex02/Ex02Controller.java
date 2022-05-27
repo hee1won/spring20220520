@@ -1,5 +1,6 @@
 package com.choong.spr.controller.ex02;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,5 +44,6 @@ public class Ex02Controller {
 	public String method05() {
 		return "/ex03/sub01";
 	}
+	
 	
 }

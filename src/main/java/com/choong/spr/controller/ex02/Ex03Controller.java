@@ -1,5 +1,6 @@
 package com.choong.spr.controller.ex02;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -107,5 +108,23 @@ public class Ex03Controller {
 		b.setTitle("스프링");
 		b.setWriter("홍길동");
 		return b;
+	}
+	
+	@GetMapping("sub17")
+	public ResponseEntity<String> method17() {
+		
+		return ResponseEntity.status(500).body("internal server error");
+		
+	}
+	
+	@GetMapping("sub18")
+	public ResponseEntity<String> method18(){
+		boolean success = Math.random() > 0.5;
+		
+		if(success) {
+			return ResponseEntity.ok().body("data tou want");
+		}else {
+			return ResponseEntity.status(500).body("something wrong");
+		}
 	}
 }
