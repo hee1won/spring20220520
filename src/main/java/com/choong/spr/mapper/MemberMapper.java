@@ -14,7 +14,6 @@ public interface MemberMapper {
 
 	int countMemberEmail(String email);
 
-	int countMemberNickname(String nickname);
 
 	List<MemberDto> listMember();
 
@@ -31,6 +30,10 @@ public interface MemberMapper {
 	int insertAuth(@Param("id")String id, @Param("auth")String auth);
 
 	int deleteAuthById(String id);
+
+	int countMemberNickname(String nickname);
+
+	void updatePasswordById(@Param("id")String id, @Param("pw")String pw);
 
 
 }

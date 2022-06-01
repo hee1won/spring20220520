@@ -77,17 +77,15 @@
 									<div class="fw-bold">
 										<i class="fa-solid fa-comment"></i>
 										\${list[i].prettyInserted}
-										<span class="reply-edit-toggle-button badge bg-info text-dark"
-											id="replyEditToggleButton\${list[i].id }"
-											data-reply-id="\${list[i].id }">
-											<i class="fa-solid fa-pen-to-square"></i>
-										</span>
-										<span class="reply-delete-button badge bg-danger"
-											data-reply-id="\${list[i].id }">
-											<i class="fa-solid fa-trash-can"></i>
+										
+										<span id="modifyButtonWrapper\${list[i].id}">
 										</span>
 									</div>
-									\${list[i].content }
+									<span class="badge bg-light text-dark">
+									<i class="fa-solid fa-user"></i>
+									\${list[i].writerNickname}
+								</span>
+								<span id="replyContent\${list[i].id }"><span>
 	
 	
 								</div>
@@ -110,6 +108,22 @@
 								
 								`);
 						replyListElement.append(replyElement);
+						$("#replyContent" + list[i].id).text(list[i].content);
+						
+						// own이 true 일 때만 수정, 삭제 버튼 보이기 
+						if(list[i].own){
+							$("#modifyButtonWrapper" + list[i].id).html(`
+									<span class="reply-edit-toggle-button badge bg-info text-dark"
+									id="replyEditToggleButton\${list[i].id }"
+									data-reply-id="\${list[i].id }">
+									<i class="fa-solid fa-pen-to-square"></i>
+								</span>
+								<span class="reply-delete-button badge bg-danger"
+									data-reply-id="\${list[i].id }">
+									<i class="fa-solid fa-trash-can"></i>
+								</span>
+							`);
+						}
 						
 					} // end of for
 					
@@ -140,6 +154,7 @@
 								
 							},
 							error : function() {
+								$("#replyMessage1").show().text("계정이 다릅니다.").fadeOut(3000);
 								console.log("수정 실패");
 							},
 							complete : function() {
@@ -228,6 +243,7 @@
 					// console.log(data);
 				},
 				error : function() {
+					$("#replyMessage1").show().text("로그인 해주세요.").fadeOut(3000);
 					console.log("문제 발생");
 				},
 				complete : function() {
@@ -279,6 +295,11 @@
 						<label class="form-label" for="textarea1">본문</label>
 						<textarea class="form-control" name="body" id="textarea1"
 							cols="30" rows="10" readonly>${board.body }</textarea>
+					</div>
+					
+					<div>
+					
+						<img src="file:///Users/heewon/Desktop/work/imgtmp/board/${board.id }/${board.fileName }" alt="" />
 					</div>
 					
 					<div>
@@ -372,7 +393,6 @@
 
 						</li>
 					</c:forEach>
-					--%>
 				</ul>
 			</div>
 		</div>

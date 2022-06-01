@@ -7,8 +7,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.choong.spr.domain.BoardDto;
 import com.choong.spr.domain.MemberDto;
+import com.choong.spr.mapper.BoardMapper;
 import com.choong.spr.mapper.MemberMapper;
+import com.choong.spr.mapper.ReplyMapper;
 
 @Service
 public class MemberService {
@@ -18,6 +21,12 @@ public class MemberService {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private ReplyMapper replyMapper;
+	
+	@Autowired
+	private BoardMapper boardMapper;
 
 	public boolean addMember(MemberDto member) {
 		
@@ -64,9 +73,24 @@ public class MemberService {
 		String encodedPw = member.getPassword();
 		
 		if(passwordEncoder.matches(rawPw, encodedPw)) {
-			int cnt1 = mapper.deleteAuthById(dto.getId());
-			int cnt2 = mapper.deleteMemberById(dto.getId());
-			return cnt2 == 1;
+			// 댓글 삭제 
+			replyMapper.deleteByMemberId(dto.getId());
+			
+			// 멤버가 쓴 게시글에 달린 다른사람 댓글 삭제 
+			List<BoardDto> boardList = boardMapper.listByMemberId(dto.getId());
+			for (BoardDto board : boardList) {
+				replyMapper.deleteByBoardId(board.getId());
+			}
+			
+			// 멤버가 쓴 게시글 삭제 
+			boardMapper.deleteByMemberId(dto.getId());
+			
+			// 권한테이블 삭제
+			mapper.deleteAuthById(dto.getId());
+			
+			// 멤버테이블 삭제
+			int cnt = mapper.deleteMemberById(dto.getId());
+			return cnt == 1;
 		}
 		return false;
 	}
@@ -94,6 +118,13 @@ public class MemberService {
 			return mapper.updateMember(dto) == 1;
 		}
 		return false;
+	}
+
+	public void initPassword(String id) {
+		
+		String pw = passwordEncoder.encode(id);
+		mapper.updatePasswordById(id, pw);
+		
 	}
 
 
