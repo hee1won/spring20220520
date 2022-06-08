@@ -153,8 +153,10 @@ public class MemberController {
 		if(hasAuthOrAdmin(dto.getId(), principal, req)) {
 			
 			boolean success = service.modifyMember(dto, oldPassword);
-			System.out.println(dto);
-			System.out.println(oldPassword);
+			
+//			System.out.println(dto);
+//			System.out.println(oldPassword);
+			
 			if(success) {
 				rttr.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
 				return "redirect:/board/list";

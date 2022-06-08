@@ -31,6 +31,8 @@
 			$("#textarea1").removeAttr("readonly");
 			$("#modify-submit1").removeClass("d-none");
 			$("#delete-submit1").removeClass("d-none");
+			$("#addFileInputContainer1").removeClass("d-none");
+			$(".removeFileCheckbox").removeClass("d-none");
 		});
 
 		$("#delete-submit1").click(function(e) {
@@ -282,7 +284,7 @@
 					<div class="alert alert-primary">${message }</div>
 				</c:if>
 
-				<form id="form1" action="${appRoot }/board/modify" method="post">
+				<form id="form1" action="${appRoot }/board/modify" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="id" value="${board.id }" />
 
 					<div>
@@ -297,9 +299,30 @@
 							cols="30" rows="10" readonly>${board.body }</textarea>
 					</div>
 					
-					<div>
+					<c:forEach items="${board.fileName }" var="file">
+					<%
+						String file = (String) pageContext.getAttribute("file");
+						String encodedFileName = java.net.URLEncoder.encode(file,"utf-8");
+						pageContext.setAttribute("encodedFileName", encodedFileName);
+					%>	
+					<div class="row">
+						<div class="col-1">
+							<div class="d-none removeFileCheckbox">
+								삭제 <br />
+								<input type="checkbox" name="removeFileList" value="${file }" />
+							</div>
+						</div>
+						<div class="col-11">
+							<div>
+								<img class="img-fluid" src="${imageUrl}/board/${board.id }/${encodedFileName }" alt="" />
+							</div>
+						</div>
+					</div>
+					</c:forEach>
 					
-						<img src="file:///Users/heewon/Desktop/work/imgtmp/board/${board.id }/${board.fileName }" alt="" />
+					<div class="d-none" id="addFileInputContainer1">
+						파일 추가 : 
+						<input type="file" accept="image/*" multiple="multiple" name="addFileList" />
 					</div>
 					
 					<div>
@@ -313,6 +336,7 @@
 						<input class="form-control" type="datetime-local"
 							value="${board.inserted }" readonly />
 					</div>
+					
 
 					<button id="modify-submit1" class="btn btn-primary d-none">수정</button>
 					<button id="delete-submit1" class="btn btn-danger d-none">삭제</button>

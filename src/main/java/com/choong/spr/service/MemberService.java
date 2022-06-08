@@ -107,7 +107,6 @@ public class MemberService {
 		// db에서 member 읽어서 
 		MemberDto oldMember = mapper.selectMemberById(dto.getId());
 		// 기존 password가 일치할때만 계속 진행
-		
 		String encodedPw = oldMember.getPassword();
 		
 		if(passwordEncoder.matches(oldPassword, encodedPw)) {

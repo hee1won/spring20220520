@@ -7,12 +7,14 @@
 
 	<select id="selectBoardAll" resultType="com.choong.spr.domain.BoardDto">
 		SELECT b.id, 
-		b.title, 
-		b.inserted, 
-		COUNT(r.id) numOfReply,
-		m.nickName writerNickname
+		       b.title, 
+		       b.inserted, 
+		       COUNT(DISTINCT r.id) numOfReply,
+		       m.nickName writerNickName,
+		       COUNT(f.id) hasFile 
 		FROM Board b LEFT JOIN Reply r ON b.id = r.board_id
-						  JOIN Member m ON b.memberId = m.id
+		                  JOIN Member m ON b.memberId = m.id
+		             LEFT JOIN File f ON b.id = f.boardId
 		
 		<if test="keyword != '%%' ">
 		
@@ -51,11 +53,9 @@
 		b.inserted, 
 		COUNT(r.id) numOfReply,
 		m.id memberId,
-		m.nickName writerNickname,
-		f.fileName
+		m.nickName writerNickname
 		FROM Board b LEFT JOIN Reply r ON b.id = r.board_id
 						  JOIN Member m ON b.memberId = m.id
-					 LEFT JOIN File f ON b.id = f.boardId
 		WHERE b.id = #{id}
 	</select>
 	
@@ -97,5 +97,24 @@
 	<delete id="deleteFileByBoardId">
 	DELETE FROM File
 	WHERE boardId = #{boardId}
+	</delete>
+	
+	<update id="updateFileByBoardId">
+	UPDATE File
+		SET fileName = #{fileName}
+		WHERE 
+		    boardId = #{boardId}
+	</update>
+	
+	<select id="selectFileNameByBoard" resultType="String">
+	SELECT fileName
+	FROM File
+	WHERE boardId = #{boardId}
+	</select>
+	
+	<delete id="deleteFileByBoardIdAndFileName">
+	DELETE FROM File
+	WHERE boardId = #{boardId}
+	AND fileName = #{fileName}
 	</delete>
 </mapper>

@@ -1,6 +1,7 @@
 package com.choong.spr.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class BoardController {
 	
 	@PostMapping("insert")
 	public String insert(BoardDto board,
-			MultipartFile file,
+			MultipartFile[] file,
 			Principal principal, 
 			RedirectAttributes rttr) {
 		
@@ -54,8 +55,16 @@ public class BoardController {
 //		System.out.println(principal);
 //		System.out.println(principal.getName()); // user name
 		
-		if(file.getSize() > 0 ) {
-			board.setFileName(file.getOriginalFilename());
+//		if(file.getSize() > 0 ) {
+//			board.setFileName(file.getOriginalFilename());
+//		}
+		
+		if(file != null) {
+			List<String> fileList = new ArrayList<>();
+			for(MultipartFile f: file) {
+				fileList.add(f.getOriginalFilename());
+			}
+			board.setFileName(fileList);
 		}
 		
 		board.setMemberId(principal.getName());
@@ -81,14 +90,17 @@ public class BoardController {
 	}
 	
 	@PostMapping("modify")
-	public String modify(BoardDto dto, RedirectAttributes rttr, Principal principal) {
+	public String modify(BoardDto dto,
+			@RequestParam(name = "removeFileList", required = false)
+			ArrayList<String> removeFileList, RedirectAttributes rttr, Principal principal,
+			MultipartFile[] addFileList) {
 		
 		// 게시물 정보 얻고 
 		BoardDto oldBoard = service.getBoardById(dto.getId());
 		// 게시물 작성자(memberId)와 principal의 name과 비교해서 같을 때만 진행.
 		if(oldBoard.getMemberId().equals(principal.getName())) {
 			
-			boolean success = service.updateBoard(dto);
+			boolean success = service.updateBoard(dto, removeFileList, addFileList);
 			
 			if (success) {
 				rttr.addFlashAttribute("message", "글이 수정되었습니다.");
